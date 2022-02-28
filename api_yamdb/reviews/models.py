@@ -1,20 +1,15 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
-"""
-Второй разработчик пишет категории (Categories),
-жанры (Genres) и произведения (Titles):
-модели, представления и эндпойнты для них.
-"""
+from datetime import datetime
 
 
 class Categories(models.Moodel):
     """Модель Категории."""
-
     """
     При удалении объекта категории Category не нужно
     удалять связанные с этой категорией произведения.
     """
-    # id, name, slug
     name = models.CharField('Категория', max_length=256)
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
@@ -33,7 +28,6 @@ class Genres(models.Model):
     При удалении объекта жанра Genre не нужно
     удалять связанные с этим жанром произведения.
     """
-    # id, name, slug
     name = models.CharField('Жанр', max_length=256)
     slug = models.SlugField('Жанр слаг', unique=True, max_length=50)
 
@@ -45,15 +39,30 @@ class Genres(models.Model):
         return self.name
 
 
+def validate_year(value):
+    """
+    Валидатор для проверки введенного года выпуска произведения.
+    """
+    year_now = datetime.now().year()
+    if year_now > value:
+        return value
+    else:
+        raise ValidationError(
+            f'Год выпуска произведения {value} не может быть больше '
+            f'настоящего года {year_now}.'
+        )
+
+
 class Titles(models.Model):
     """Модель Произведения."""
+
     """
     При удалении объекта произведения Title должны удаляться
     все отзывы к этому произведению и комментарии к ним.
     """
-    # id, name, year, category
     name = models.CharField('Название произведения', max_length=256)
-    year = models.IntegerField('Год выпуска', max_length=4)
+    year = models.IntegerField('Год выпуска', max_length=4,
+                               validators=[validate_year])
     description = models.TextField('Описание произведения', blank=True)
     category = models.ForeignKey('Categories', on_delete=models.SET_NULL,
                                  related_name='categories', blank=True,
@@ -72,9 +81,9 @@ class Titles(models.Model):
 class GenreTitle(models.Model):
     """
     Модель через которую реализована свзяь m2m.
-    Связанные модели: Titles, Genre.
+    Связные модели: Titles, Genre.
     """
-    # Метод удаления полей ???
     genre = models.ForeignKey(Genres, on_delete=models.SET_NULL, blank=True,
                               null=True)
-    title = models.ForeignKey(Titles, on_delete=models.CASCADE)
+    title = models.ForeignKey(Titles, on_delete=models.SET_NULL, blank=True,
+                              null=True)
