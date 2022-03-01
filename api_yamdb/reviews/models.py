@@ -193,7 +193,7 @@ class Comment(models.Model):
         'Текст комментария',
         help_text='Введите текст комментария'
     )
-    review_id = models.ForeignKey(
+    review = models.ForeignKey(
         'Review',
         on_delete=models.CASCADE,
         related_name='comments',
