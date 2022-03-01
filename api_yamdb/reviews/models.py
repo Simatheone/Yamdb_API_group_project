@@ -112,11 +112,11 @@ class Title(models.Model):
 
     name = models.CharField("Название произведения", max_length=256)
     year = models.IntegerField(
-        "Год выпуска", max_length=4, validators=[validate_year]
+        "Год выпуска", validators=[validate_year]
     )
     description = models.TextField("Описание произведения", blank=True)
     category = models.ForeignKey(
-        "Categories",
+        "Category",
         on_delete=models.SET_NULL,
         related_name="categories",
         blank=True,

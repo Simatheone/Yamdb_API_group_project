@@ -1,25 +1,25 @@
 # from rest_framework import filters
 from rest_framework import viewsets
 
-from api.serializers import (
+from .serializers import (
     CategoriesSerializer, GenresSerializer,
     TitlesSerializer
 )
 from reviews.models import (
-    Categories, Genres, Titles
+    Category, Genre, Title
 )
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
-    queryset = Categories.objects.all()
+    queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
 
 
 class GenresViewSet(viewsets.ModelViewSet):
-    queryset = Genres.objects.all()
+    queryset = Genre.objects.all()
     serializer_class = GenresSerializer
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     serializer_class = TitlesSerializer
