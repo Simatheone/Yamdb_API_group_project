@@ -5,7 +5,7 @@ path = "db.sqlite3"
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("category.csv", "r", encoding="utf-8") as fin:
+with open("static/data/category.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["name"], i["slug"]) for i in directory]
 cur.executemany(
@@ -17,7 +17,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("comments.csv", "r", encoding="utf-8") as fin:
+with open("static/data/comments.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [
         (i["id"], i["review_id"], i["text"], i["author"], i["pub_date"])
@@ -35,7 +35,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("genre.csv", "r", encoding="utf-8") as fin:
+with open("static/data/genre.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["name"], i["slug"]) for i in directory]
 cur.executemany(
@@ -46,7 +46,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("genre_title.csv", "r", encoding="utf-8") as fin:
+with open("static/data/genre_title.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["title_id"], i["genre_id"]) for i in directory]
 cur.executemany(
@@ -61,7 +61,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("review.csv", "r", encoding="utf-8") as fin:
+with open("static/data/review.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [
         (
@@ -86,7 +86,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("titles.csv", "r", encoding="utf-8") as fin:
+with open("static/data/titles.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["name"], i["year"], i["category"]) for i in directory]
 cur.executemany(
@@ -102,7 +102,7 @@ use.close()
 
 use = sqlite3.connect(path)
 cur = use.cursor()
-with open("users.csv", "r", encoding="utf-8") as fin:
+with open("static/data/users.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [
         (
