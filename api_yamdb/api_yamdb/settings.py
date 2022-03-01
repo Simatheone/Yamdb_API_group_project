@@ -1,6 +1,5 @@
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
@@ -9,7 +8,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reviews',
+    'reviews.apps.ReviewsConfig',
 ]
 
 MIDDLEWARE = [
@@ -31,7 +29,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api_yamdb.urls'
-
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
@@ -52,14 +49,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_yamdb.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -76,7 +71,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -92,3 +86,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 EMPTY_VALUE_ADMIN_PANEL = '-empty-'
+AUTH_USER_MODEL = 'reviews.CustomUser'

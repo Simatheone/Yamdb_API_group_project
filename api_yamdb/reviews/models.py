@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -15,8 +14,6 @@ USER_ROLE_CHOICES = (
     (USER_ROLE_MODERATOR, "Модератор"),
     (USER_ROLE_ADMIN, "Админ"),
 )
-
-User = get_user_model()
 
 
 def validate_year(value):
@@ -117,12 +114,12 @@ class Title(models.Model):
         "Category",
         on_delete=models.SET_NULL,
         related_name="categories",
-        blank=True,
         null=True,
+        blank=True,
         verbose_name="Категория произведения",
     )
     genre = models.ManyToManyField(
-        "Genre", related_name="genres", through="GenreTitle"
+        "Genre", related_name="genre", through="GenreTitle"
     )
 
     class Meta:
@@ -146,7 +143,7 @@ class GenreTitle(models.Model):
 
 class Review(models.Model):
     author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Автор'
@@ -156,7 +153,7 @@ class Review(models.Model):
         help_text='Введите текст обзора'
     )
     title_id = models.ForeignKey(
-        'Titles',
+        "Title",
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
@@ -187,7 +184,7 @@ class Review(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Автор'
