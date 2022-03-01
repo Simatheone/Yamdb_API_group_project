@@ -1,7 +1,24 @@
 from django.contrib import admin
+from django.conf import settings
 
-from reviews.models import Categories, Genres, Titles
+from reviews.models import Categories, CustomUser, Genres, Titles
 from api_yamdb.settings import EMPTY_VALUE_ADMIN_PANEL
+
+
+@admin.register(CustomUser)
+class UserAdmin(admin.ModelAdmin):
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "bio",
+        "role",
+        "is_staff",
+    )
+    search_fields = ("username",)
+    list_filter = ("role",)
+    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Categories)

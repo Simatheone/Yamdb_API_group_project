@@ -1,11 +1,23 @@
 from django.contrib.auth import get_user_model
-from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db import models
 
 from datetime import datetime
 
+USER_ROLE_USER = "user"
+USER_ROLE_MODERATOR = "moderator"
+USER_ROLE_ADMIN = "admin"
+
+USER_ROLE_CHOICES = (
+    (USER_ROLE_USER, "Пользователь"),
+    (USER_ROLE_MODERATOR, "Модератор"),
+    (USER_ROLE_ADMIN, "Админ"),
+)
+
 User = get_user_model()
+
 
 def validate_year(value):
     """
@@ -21,12 +33,54 @@ def validate_year(value):
         )
 
 
-class Category(models.Moodel):
-    """Модель Категории.
+class CustomUser(AbstractUser):
+    username_validator = UnicodeUsernameValidator()
+    username = models.CharField(
+        verbose_name="Пользователь",
+        max_length=257,
+        unique=True,
+        help_text=("Представьтесь пожалуйста."),
+        validators=[username_validator],
+        error_messages={
+            "unique": "Пользователь с таким именем уже зарегистрирован",
+        },
+    )
+    first_name = models.CharField(
+        verbose_name="Имя", max_length=257, blank=True
+    )
+    last_name = models.CharField(
+        verbose_name="Фамилия", max_length=257, blank=True
+    )
+    email = models.EmailField(
+        max_length=257, unique=True, verbose_name="Электронная почта"
+    )
+    role = models.CharField(
+        max_length=16,
+        choices=USER_ROLE_CHOICES,
+        default=USER_ROLE_USER,
+        verbose_name="Роль",
+    )
+    bio = models.TextField(blank=True, verbose_name="Биография")
+    confirmation_code = models.CharField(
+        max_length=50, blank=True, verbose_name="Код для авторизации"
+    )
 
-    При удалении объекта категории Category не нужно
-    удалять связанные с этой категорией произведения.
-    """
+    class Meta:
+        ordering = ("username",)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["username", "email"], name="unique_username_email"
+            )
+        ]
+
+    def is_admin(self):
+        return self.is_staff or self.role == USER_ROLE_ADMIN
+
+
+class Category(models.Moodel):
+    """Модель Категории."""
     name = models.CharField('Категория', max_length=256)
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
@@ -38,12 +92,8 @@ class Category(models.Moodel):
         return self.name[:30]
 
 
-class Genres(models.Model):
-    """Модель Жанры.
-
-    При удалении объекта жанра Genre не нужно
-    удалять связанные с этим жанром произведения.
-    """
+class Genre(models.Model):
+    """Модель Жанры."""
     name = models.CharField('Жанр', max_length=256)
     slug = models.SlugField('Жанр слаг', unique=True, max_length=50)
 
@@ -52,16 +102,11 @@ class Genres(models.Model):
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name
+        return self.name[:30]
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Модель Произведения."""
-
-    """
-    При удалении объекта произведения Title должны удаляться
-    все отзывы к этому произведению и комментарии к ним.
-    """
     name = models.CharField('Название произведения', max_length=256)
     year = models.IntegerField('Год выпуска', max_length=4,
                                validators=[validate_year])
@@ -132,7 +177,7 @@ class Review(models.Model):
         return self.text[:30]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
