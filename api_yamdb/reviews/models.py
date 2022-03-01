@@ -1,9 +1,9 @@
-from django.core.exceptions import ValidationError
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.exceptions import ValidationError
 from django.db import models
-
-from datetime import datetime
 
 USER_ROLE_USER = "user"
 USER_ROLE_MODERATOR = "moderator"
@@ -14,7 +14,6 @@ USER_ROLE_CHOICES = (
     (USER_ROLE_MODERATOR, "Модератор"),
     (USER_ROLE_ADMIN, "Админ"),
 )
-
 
 
 def validate_year(value):
@@ -109,9 +108,7 @@ class Title(models.Model):
     """Модель Произведения."""
 
     name = models.CharField("Название произведения", max_length=256)
-    year = models.IntegerField(
-        "Год выпуска", validators=[validate_year]
-    )
+    year = models.IntegerField("Год выпуска", validators=[validate_year])
     description = models.TextField("Описание произведения", blank=True)
     category = models.ForeignKey(
         "Category",
