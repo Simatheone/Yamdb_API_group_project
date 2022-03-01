@@ -1,5 +1,5 @@
 from reviews.models import (
-    Categories, Genres, Titles
+    Category, Genre, Title
 )
 
 
@@ -7,7 +7,7 @@ class CategoriesSerializer:
     """Сериализатор для модели Категории."""
 
     class Meta:
-        model = Categories
+        model = Category
         fields = ()
 
 
@@ -15,7 +15,7 @@ class GenresSerializer:
     """Сериализатор для модели Жанры."""
 
     class Meta:
-        model = Genres
+        model = Genre
         fields = ()
 
 
@@ -23,5 +23,5 @@ class TitlesSerializer:
     """Сериализатор для модели Произведения."""
 
     class Meta:
-        model = Titles
+        model = Title
         fields = ()
