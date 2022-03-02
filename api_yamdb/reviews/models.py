@@ -109,7 +109,9 @@ class Title(models.Model):
     year = models.IntegerField(
         "Год выпуска", validators=[validate_year]
     )
-    description = models.TextField("Описание произведения", blank=True)
+    description = models.TextField(
+        "Описание произведения", blank=True, null=True
+    )
     category = models.ForeignKey(
         "Category",
         on_delete=models.SET_NULL,
@@ -140,6 +142,9 @@ class GenreTitle(models.Model):
     title = models.ForeignKey(Title, on_delete=models.SET_NULL, blank=True,
                               null=True)
 
+    class Meta:
+        db_table = 'reviews_title_genre'
+
 
 class Review(models.Model):
     author = models.ForeignKey(
@@ -152,14 +157,13 @@ class Review(models.Model):
         'Текст',
         help_text='Введите текст обзора'
     )
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         "Title",
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
     )
     score = models.PositiveIntegerField(
-        on_delete=models.CASCADE,
         verbose_name='Оценка',
         help_text='Оцените произведение'
     )
@@ -209,7 +213,7 @@ class Comment(models.Model):
         ordering = ('-pub_date', 'author',)
         indexes = (
             models.Index(
-                fields=['review_id'],
+                fields=['review'],
                 name='review_comment_idx'
             ),
         )
