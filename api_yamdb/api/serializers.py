@@ -3,25 +3,27 @@ from reviews.models import (
 )
 
 
-class CategoriesSerializer:
+class CategorySerializer:
     """Сериализатор для модели Категории."""
 
     class Meta:
         model = Category
-        fields = ()
+        fields = ('name', 'slug')
 
 
-class GenresSerializer:
+class GenreSerializer:
     """Сериализатор для модели Жанры."""
 
     class Meta:
         model = Genre
-        fields = ()
+        fields = ('name', 'slug')
 
 
-class TitlesSerializer:
+class TitleSerializer:
     """Сериализатор для модели Произведения."""
 
     class Meta:
         model = Title
-        fields = ()
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
