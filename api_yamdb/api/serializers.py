@@ -1,9 +1,11 @@
+from rest_framework import serializers
+
 from reviews.models import (
-    Category, Genre, Title
+    Category, Genre, Review, Title
 )
 
 
-class CategorySerializer:
+class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для модели Категории."""
 
     class Meta:
@@ -11,7 +13,7 @@ class CategorySerializer:
         fields = ('name', 'slug')
 
 
-class GenreSerializer:
+class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Жанры."""
 
     class Meta:
@@ -19,11 +21,19 @@ class GenreSerializer:
         fields = ('name', 'slug')
 
 
-class TitleSerializer:
+class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Произведения."""
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = (
             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
+        read_only = ('id', 'description')
+
+    def get_ratings(self, obj):
+        """Метод для вычисления усреднённой оценки произведения."""
+        score = Review.objects.filter(score__reviews=obj.id)
+        rating = sum(score) / len(score)
+        return rating
