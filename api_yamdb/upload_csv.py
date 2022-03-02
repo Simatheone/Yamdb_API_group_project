@@ -20,13 +20,13 @@ cur = use.cursor()
 with open("static/data/comments.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [
-        (i["id"], i["review_id"], i["text"], i["author"], i["pub_date"])
+        (i["id"], i["review_id"], i["text"], i["author_id"], i["pub_date"])
         for i in directory
     ]
 cur.executemany(
     (
-        "INSERT INTO reviews_comment (id, review_id, text, author,"
-        " pub_date) VALUES (?, ?, ?, ?, ?);"
+        "INSERT INTO comments (id, review_id, text, author_id,"
+        "pub_date) VALUES (?, ?, ?, ?, ?);"
     ),
     base,
 )
@@ -48,10 +48,10 @@ use = sqlite3.connect(path)
 cur = use.cursor()
 with open("static/data/genre_title.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
-    base = [(i["id"], i["title_id"], i["genre_id"]) for i in directory]
+    base = [(i["id"], i["genre_id"], i["title_id"]) for i in directory]
 cur.executemany(
     (
-        "INSERT INTO reviews_title_genre (id, title_id, genre_id) "
+        "INSERT INTO reviews_title_genre (id, genre_id, title_id)"
         "VALUES (?, ?, ?);"
     ),
     base,
@@ -66,18 +66,18 @@ with open("static/data/review.csv", "r", encoding="utf-8") as fin:
     base = [
         (
             i["id"],
-            i["title_id"],
             i["text"],
-            i["author"],
             i["score"],
             i["pub_date"],
+            i["author"],
+            i["title"],
         )
         for i in directory
     ]
 cur.executemany(
     (
-        "INSERT INTO reviews_review (id, title_id, text, author, "
-        "score, pub_date, title_id) VALUES (?, ?, ?, ?, ?, ?, ?);"
+        "INSERT INTO reviews (id, text, score, pub_date, "
+        "author_id, title_id) VALUES (?, ?, ?, ?, ?, ?);"
     ),
     base,
 )
@@ -91,7 +91,7 @@ with open("static/data/titles.csv", "r", encoding="utf-8") as fin:
     base = [(i["id"], i["name"], i["year"], i["category"]) for i in directory]
 cur.executemany(
     (
-        "INSERT INTO reviews_title (id, name, year, category) "
+        "INSERT INTO reviews_title (id, name, year, category_id)"
         "VALUES (?, ?, ?, ?);"
     ),
     base,
@@ -110,16 +110,13 @@ with open("static/data/users.csv", "r", encoding="utf-8") as fin:
             i["username"],
             i["email"],
             i["role"],
-            i["bio"],
-            i["first_name"],
-            i["last_name"],
         )
         for i in directory
     ]
 cur.executemany(
     (
-        "INSERT INTO reviews_title (id, username, email, role, bio, first_name, last_name) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?);"
+        "INSERT INTO reviews_customuser (id, username, email, role)"
+        "VALUES (?, ?, ?, ?);"
     ),
     base,
 )
