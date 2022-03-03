@@ -1,9 +1,9 @@
-from django.core.exceptions import ValidationError
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.exceptions import ValidationError
 from django.db import models
-
-from datetime import datetime
 
 USER_ROLE_USER = "user"
 USER_ROLE_MODERATOR = "moderator"
@@ -107,7 +107,13 @@ class Title(models.Model):
 
     name = models.CharField("Название произведения", max_length=256)
     year = models.IntegerField(
-        "Год выпуска", validators=[validate_year]
+        "Год выпуска",
+        validators=[validate_year]
+    )
+    description = models.TextField(
+        "Описание произведения",
+        blank=True,
+        null=True
     )
     description = models.TextField(
         "Описание произведения", blank=True, null=True
