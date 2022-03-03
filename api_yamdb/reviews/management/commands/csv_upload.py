@@ -85,14 +85,12 @@ action = {
 
 
 class Command(BaseCommand):
-    def add_arguments(self, parser):
-        parser.add_argument("filename", nargs=1, type=str)
 
     def handle(self, *args, **options):
-        filename = options["filename"][0]
-        path = os.path.join(settings.BASE_DIR, "static/data/") + filename
-        with open(path, "r", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                action[filename](row)
+        path = os.path.join(settings.BASE_DIR, "static/data/")
+        for key in action.keys():
+            with open(path + key, 'r', encoding='utf-8') as f:
+                reader = csv.reader(f)
+                next(reader)
+                for row in reader:
+                    action[key](row)
