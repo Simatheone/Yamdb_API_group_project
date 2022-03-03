@@ -1,8 +1,6 @@
-from abc import ABC
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from api_yamdb.reviews.models import Category, Genre, Title, CustomUser
+from reviews.models import Category, Genre, Title, CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,7 +36,7 @@ class EmailSerializer(serializers.ModelSerializer):
         }
 
 
-class ConfirmationCodeSerializer(serializers.Serializer, ABC):
+class ConfirmationCodeSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
 

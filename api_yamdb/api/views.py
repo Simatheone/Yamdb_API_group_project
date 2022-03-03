@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from api_yamdb.api.permissions import (IsAdmin)
-from api_yamdb.reviews.models import Category, Genre, Title, CustomUser
+from .permissions import (IsAdmin)
+from reviews.models import Category, Genre, Title, CustomUser
 from .serializers import (CategoriesSerializer, ConfirmationCodeSerializer,
                           EmailSerializer, GenresSerializer, TitlesSerializer,
                           UserSerializer)
