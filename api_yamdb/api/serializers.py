@@ -2,7 +2,7 @@ from abc import ABC
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from api_yamdb.reviews.models import Category, Comment, Genre, Review, Title, User
+from api_yamdb.reviews.models import Category, Genre, Title, CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         ]
-        model = User
+        model = CustomUser
         extra_kwargs = {
             "email": {"required": True},
             "username": {"required": True},
@@ -31,7 +31,7 @@ def validate_username(username):
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ["username", "email"]
-        model = User
+        model = CustomUser
         extra_kwargs = {
             "email": {"required": True},
             "username": {"required": True},
