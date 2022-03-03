@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from reviews.models import Category, Genre, Title, CustomUser
+from reviews.models import Category, CustomUser, Genre, Title
 
 
 class UserSerializer(serializers.ModelSerializer):

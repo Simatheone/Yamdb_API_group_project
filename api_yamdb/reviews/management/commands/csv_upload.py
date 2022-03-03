@@ -1,15 +1,10 @@
 import csv
 import os
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
-
-from reviews.models import (Category,
-                                      Genre,
-                                      GenreTitle,
-                                      Title,
-                                      Comment,
-                                      Review, CustomUser)
+from django.core.management.base import BaseCommand
+from reviews.models import (Category, Comment, CustomUser, Genre, GenreTitle,
+                            Review, Title)
 
 
 def category_create(row):
@@ -64,7 +59,7 @@ def review_create(row):
         text=row[2],
         author_id=row[3],
         score=row[4],
-        pub_date=row[5]
+        pub_date=row[5],
     )
 
 
@@ -79,29 +74,24 @@ def comment_create(row):
 
 
 action = {
-    'category.csv': category_create,
-    'genre.csv': genre_create,
-    'titles.csv': titles_create,
-    'genre_title.csv': genre_title_create,
-    'users.csv': users_create,
-    'review.csv': review_create,
-    'comments.csv': comment_create,
+    "category.csv": category_create,
+    "genre.csv": genre_create,
+    "titles.csv": titles_create,
+    "genre_title.csv": genre_title_create,
+    "users.csv": users_create,
+    "review.csv": review_create,
+    "comments.csv": comment_create,
 }
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
-        parser.add_argument(
-            'filename',
-            nargs=1,
-            type=str
-        )
+        parser.add_argument("filename", nargs=1, type=str)
 
     def handle(self, *args, **options):
-        filename = options['filename'][0]
+        filename = options["filename"][0]
         path = os.path.join(settings.BASE_DIR, "static/data/") + filename
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:

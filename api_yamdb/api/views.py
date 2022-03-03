@@ -7,9 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, CustomUser, Genre, Title
 
-from .permissions import (IsAdmin)
-from reviews.models import Category, Genre, Title, CustomUser
+from .permissions import IsAdmin
 from .serializers import (CategoriesSerializer, ConfirmationCodeSerializer,
                           EmailSerializer, GenresSerializer, TitlesSerializer,
                           UserSerializer)
