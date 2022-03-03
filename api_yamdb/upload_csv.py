@@ -76,8 +76,8 @@ with open("static/data/review.csv", "r", encoding="utf-8") as fin:
     ]
 cur.executemany(
     (
-        "INSERT INTO reviews (id, text, score, pub_date, "
-        "author_id, title_id) VALUES (?, ?, ?, ?, ?, ?);"
+        "INSERT INTO reviews_review (id, title_id, text, author, "
+        "score, pub_date, title_id) VALUES (?, ?, ?, ?, ?, ?);"
     ),
     base,
 )
