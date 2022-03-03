@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Comment, Genre, Review, Title, User
+from api_yamdb.reviews.models import Category, Comment, Genre, Review, Title, CustomUser
 
 from .permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
@@ -26,7 +26,7 @@ class ListCreateDestroyViewSet(
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
     http_method_names = ["get", "post", "patch", "delete"]
@@ -86,8 +86,8 @@ class AccessTokenView(views.APIView):
         confirmation_code = serializer.validated_data["confirmation_code"]
         username = serializer.validated_data["username"]
         try:
-            user = get_object_or_404(User, username=username)
-        except User.DoesNotExist:
+            user = get_object_or_404(CustomUser, username=username)
+        except CustomUser.DoesNotExist:
             return Response(
                 {"email": "Not found"}, status=status.HTTP_400_BAD_REQUEST
             )

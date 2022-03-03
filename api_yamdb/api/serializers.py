@@ -2,7 +2,7 @@ from abc import ABC
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from reviews.models import Category, Comment, Genre, Review, Title, User
+from api_yamdb.reviews.models import Category, Comment, Genre, Review, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
