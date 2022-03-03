@@ -9,7 +9,7 @@ with open("static/data/category.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["name"], i["slug"]) for i in directory]
 cur.executemany(
-    ("INSERT INTO reviews_category (id, name, slug) " "VALUES (?, ?, ?);"),
+    ("INSERT INTO category (id, name, slug) " "VALUES (?, ?, ?);"),
     base,
 )
 use.commit()
@@ -39,7 +39,7 @@ with open("static/data/genre.csv", "r", encoding="utf-8") as fin:
     directory = csv.DictReader(fin)
     base = [(i["id"], i["name"], i["slug"]) for i in directory]
 cur.executemany(
-    ("INSERT INTO reviews_genre (id, name, slug) " "VALUES (?, ?, ?);"), base
+    ("INSERT INTO genre (id, name, slug) " "VALUES (?, ?, ?);"), base
 )
 use.commit()
 use.close()
@@ -91,7 +91,7 @@ with open("static/data/titles.csv", "r", encoding="utf-8") as fin:
     base = [(i["id"], i["name"], i["year"], i["category"]) for i in directory]
 cur.executemany(
     (
-        "INSERT INTO reviews_title (id, name, year, category_id)"
+        "INSERT INTO title (id, name, year, category_id)"
         "VALUES (?, ?, ?, ?);"
     ),
     base,
@@ -115,7 +115,7 @@ with open("static/data/users.csv", "r", encoding="utf-8") as fin:
     ]
 cur.executemany(
     (
-        "INSERT INTO reviews_customuser (id, username, email, role)"
+        "INSERT INTO customuser (id, username, email, role)"
         "VALUES (?, ?, ?, ?);"
     ),
     base,

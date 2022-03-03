@@ -83,7 +83,7 @@ class Category(models.Model):
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
     class Meta:
-        db_table = 'categories'
+        db_table = 'categoris'
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
