@@ -7,10 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from api_yamdb.reviews.models import Category, Comment, Genre, Review, Title, CustomUser
 
-from .permissions import (IsAdmin, IsAdminOrReadOnly,
-                          IsOwnerAdminModeratorOrReadOnly)
+from api_yamdb.api.permissions import (IsAdmin)
+from api_yamdb.reviews.models import Category, Genre, Title, CustomUser
 from .serializers import (CategoriesSerializer, ConfirmationCodeSerializer,
                           EmailSerializer, GenresSerializer, TitlesSerializer,
                           UserSerializer)
@@ -71,7 +70,7 @@ class EmailRegistrationView(views.APIView):
             email = serializer.validated_data["email"]
             username = serializer.validated_data["username"]
             serializer.save(username=username)
-            user = get_object_or_404(User, username=username)
+            user = get_object_or_404(CustomUser, username=username)
             self.mail_send(email, user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
