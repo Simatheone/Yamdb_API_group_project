@@ -63,6 +63,7 @@ class CustomUser(AbstractUser):
     )
 
     class Meta:
+        db_table = 'customuser'
         ordering = ("username",)
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
@@ -82,6 +83,7 @@ class Category(models.Model):
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
     class Meta:
+        db_table = 'categories'
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
@@ -95,6 +97,7 @@ class Genre(models.Model):
     slug = models.SlugField('Жанр слаг', unique=True, max_length=50)
 
     class Meta:
+        db_table = 'genres'
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
@@ -131,6 +134,7 @@ class Title(models.Model):
     )
 
     class Meta:
+        db_table = 'titles'
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
 
