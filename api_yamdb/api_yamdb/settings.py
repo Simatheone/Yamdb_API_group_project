@@ -1,9 +1,5 @@
 import datetime
 import os
-#from dotenv import load_dotenv
-
-
-#load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,8 +16,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework_simplejwt',
-    'rest_framework',
+    "rest_framework_simplejwt",
+    "rest_framework",
     "reviews.apps.ReviewsConfig",
     "api.apps.ApiConfig",
 ]
