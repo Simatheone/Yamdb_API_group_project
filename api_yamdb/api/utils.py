@@ -2,7 +2,7 @@ import uuid
 
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from reviews.models import Title, User
+from reviews.models import Title, CustomUser
 
 from api_yamdb.settings import EMAIL_ADMIN
 
@@ -20,7 +20,7 @@ class CurrentTitleDefault:
 
 
 def generate_and_send_confirmation_code_to_email(username):
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(CustomUser, username=username)
     confirmation_code = str(uuid.uuid3(uuid.NAMESPACE_DNS, username))
     user.confirmation_code = confirmation_code
     send_mail(

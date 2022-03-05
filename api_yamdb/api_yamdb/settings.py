@@ -125,3 +125,5 @@ AUTH_USER_MODEL = 'reviews.CustomUser'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_USE_TLS = True
+
+EMAIL_ADMIN = 'admin@admin.com'

@@ -1,6 +1,6 @@
-from django.conf import settings
 from django.contrib import admin
 
+from api_yamdb.settings import EMPTY_VALUE_ADMIN_PANEL
 from .models import Category, Comment, CustomUser, Genre, Review, Title
 
 
@@ -17,7 +17,7 @@ class UserAdmin(admin.ModelAdmin):
     )
     search_fields = ("username",)
     list_filter = ("role",)
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Category)
@@ -28,7 +28,7 @@ class CategoriesAdmin(admin.ModelAdmin):
     list_editable = ("name",)
     list_filter = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Genre)
@@ -39,7 +39,7 @@ class GenresAdmin(admin.ModelAdmin):
     list_editable = ("name",)
     list_filter = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Title)
@@ -49,7 +49,7 @@ class TitlesAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "year", "description", "category")
     list_editable = ("name", "year", "description", "category")
     list_filter = ("name", "year", "category")
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Review)
@@ -63,7 +63,7 @@ class ReviewAdmin(admin.ModelAdmin):
     )
     search_fields = ('title',)
     list_filter = ('author', 'title')
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANE
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Comment)
@@ -76,4 +76,4 @@ class CommentAdmin(admin.ModelAdmin):
     )
     search_fields = ('review',)
     list_filter = ('author', 'review')
-    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANE
+    empty_value_display = EMPTY_VALUE_ADMIN_PANEL
