@@ -36,20 +36,26 @@ class CustomUser(AbstractUser):
         verbose_name="Пользователь",
         max_length=257,
         unique=True,
-        help_text=("Представьтесь пожалуйста."),
+        help_text="Введите username",
         validators=[username_validator],
         error_messages={
             "unique": "Пользователь с таким именем уже зарегистрирован",
         },
     )
     first_name = models.CharField(
-        verbose_name="Имя", max_length=257, blank=True
+        verbose_name="Имя",
+        max_length=257,
+        blank=True
     )
     last_name = models.CharField(
-        verbose_name="Фамилия", max_length=257, blank=True
+        verbose_name="Фамилия",
+        max_length=257,
+        blank=True
     )
     email = models.EmailField(
-        max_length=257, unique=True, verbose_name="Электронная почта"
+        max_length=257,
+        unique=True,
+        verbose_name="Электронная почта"
     )
     role = models.CharField(
         max_length=16,
@@ -57,12 +63,13 @@ class CustomUser(AbstractUser):
         default=USER_ROLE_USER,
         verbose_name="Роль",
     )
-    bio = models.TextField(blank=True, verbose_name="Биография")
+    bio = models.TextField("Биография", blank=True)
     confirmation_code = models.CharField(
-        max_length=50, blank=True, verbose_name="Код для авторизации"
+        "Код подтверждения", max_length=50, blank=True
     )
 
     class Meta:
+        db_table = 'customuser'
         ordering = ("username",)
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
@@ -78,10 +85,15 @@ class CustomUser(AbstractUser):
 
 class Category(models.Model):
     """Модель Категории."""
-    name = models.CharField('Категория', max_length=256)
+    name = models.CharField(
+        'Категория',
+        max_length=256,
+        help_text='Введите название категории'
+    )
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
     class Meta:
+        db_table = 'categoris'
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
@@ -91,10 +103,15 @@ class Category(models.Model):
 
 class Genre(models.Model):
     """Модель Жанры."""
-    name = models.CharField('Жанр', max_length=256)
+    name = models.CharField(
+        'Жанр',
+        max_length=256,
+        help_text='Введите название жанра'
+    )
     slug = models.SlugField('Жанр слаг', unique=True, max_length=50)
 
     class Meta:
+        db_table = 'genres'
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
@@ -104,30 +121,39 @@ class Genre(models.Model):
 
 class Title(models.Model):
     """Модель Произведения."""
-
-    name = models.CharField("Название произведения", max_length=256)
+    name = models.CharField(
+        "Название произведения",
+        max_length=256,
+        help_text='Введите название произведения'
+    )
     year = models.IntegerField(
         "Год выпуска",
-      validators=[validate_year]
+        validators=[validate_year],
+        help_text='Введите год выпуска произведения'
     )
     description = models.TextField(
         "Описание произведения",
-      blank=True,
-      null=True
+        blank=True,
+        null=True,
+        help_text='Введите описание произведения'
     )
     category = models.ForeignKey(
-        "Category",
+        Category,
         on_delete=models.SET_NULL,
-        related_name="categories",
+        related_name="titles",
         null=True,
         blank=True,
-        verbose_name="Категория произведения",
+        verbose_name="Категория произведения"
     )
     genre = models.ManyToManyField(
-        "Genre", related_name="genre", through="GenreTitle"
+        Genre,
+        related_name="titles",
+        through="GenreTitle",
+        verbose_name="Жанры произведения"
     )
 
     class Meta:
+        db_table = 'titles'
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
 
@@ -140,10 +166,20 @@ class GenreTitle(models.Model):
     Модель через которую реализована свзяь m2m.
     Связные модели: Titles, Genre.
     """
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, blank=True,
-                              null=True)
-    title = models.ForeignKey(Title, on_delete=models.SET_NULL, blank=True,
-                              null=True)
+    genre = models.ForeignKey(
+        Genre,
+        related_name='genretitle',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    title = models.ForeignKey(
+        Title,
+        related_name='genretitle',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
 
     class Meta:
         db_table = 'reviews_title_genre'
@@ -161,7 +197,7 @@ class Review(models.Model):
         help_text='Введите текст обзора'
     )
     title = models.ForeignKey(
-        "Title",
+        Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
@@ -201,7 +237,7 @@ class Comment(models.Model):
         help_text='Введите текст комментария'
     )
     review = models.ForeignKey(
-        'Review',
+        Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Обзор'

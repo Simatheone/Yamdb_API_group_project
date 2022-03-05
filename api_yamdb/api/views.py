@@ -1,41 +1,58 @@
-# from rest_framework import filters
+import django_filters
+from rest_framework.decorators import action
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, status, views, viewsets
-from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, views, viewsets
+from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+
+from .pagination import CategoryPagination
+from .permissions import IsAdmin, IsAdminOrReadOnly
+from .serializers import (
+    CategorySerializer, ConfirmationCodeSerializer,
+    EmailSerializer, GenreSerializer, TitleReadSerializer,
+    TitleWriteSerializer, UserSerializer
+)
 from reviews.models import Category, CustomUser, Genre, Title
 
-from .permissions import IsAdmin
-from .serializers import (CategoriesSerializer, ConfirmationCodeSerializer,
-                          EmailSerializer, GenresSerializer, TitlesSerializer,
-                          UserSerializer)
 
+class TitleFilterBackend(django_filters.FilterSet):
+    """
+    Кастомный фильтр для Title.
+    Добавляет возможность поиска по полю slug жанра и категории.
+    """
+    genre = django_filters.CharFilter(
+        field_name='genre__slug',
+        lookup_expr='icontains'
+    )
+    category = django_filters.CharFilter(
+        field_name='category__slug',
+        lookup_expr='icointains'
+    )
 
-class ListCreateDestroyViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    pass
+    class Meta:
+        model = Title
+        fields = ('genre', 'category', 'name', 'year')
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdmin]
-    http_method_names = ["get", "post", "patch", "delete"]
-    search_fields = ["username"]
+    permission_classes = (IsAdmin,)
+    http_method_names = ("get", "post", "patch", "delete")
+    search_fields = ("username",)
     lookup_field = "username"
 
     @action(
         detail=False,
         methods=["get", "patch"],
-        permission_classes=[IsAuthenticated],
+        permission_classes=(IsAuthenticated,)
     )
     def me(self, request):
         if request.method == "GET":
@@ -93,7 +110,8 @@ class AccessTokenView(views.APIView):
         if user.confirmation_code != confirmation_code:
             return Response(
                 {
-                    "confirmation_code": f"Invalid confirmation code for email {user.email}"
+                    "confirmation_code": ('Invalid confirmation'
+                                          f'code for email {user.email}')
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -104,16 +122,53 @@ class AccessTokenView(views.APIView):
         return {"token": str(AccessToken.for_user(user))}
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    Вьюсет для модели Category.
+    Обрабатывает запросы: GET, POST, DELETE
+    Эндпоинты: /categories/, /categories/{slug}/
+    """
     queryset = Category.objects.all()
-    serializer_class = CategoriesSerializer
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (SearchFilter,)
+    search_fields = ('=slug',)
+    pagination_class = CategoryPagination
+    lookup_field = 'slug'
+    http_method_names = ['get', 'post', 'delete']
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class GenresViewSet(viewsets.ModelViewSet):
+class GenreViewSet(viewsets.ModelViewSet):
+    """
+    Вьюсет для модели Genre.
+    Обрабатывает запросы: GET, POST, DELETE
+    Эндпоинты: /genres/, /genres/{slug}/
+    """
     queryset = Genre.objects.all()
-    serializer_class = GenresSerializer
+    serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = PageNumberPagination
+    lookup_field = 'slug'
+    http_method_names = ['get', 'post', 'delete']
 
 
-class TitlesViewSet(viewsets.ModelViewSet):
+class TitleViewSet(viewsets.ModelViewSet):
+    """
+    Вьюсет для модели Title.
+    Обрабатывает запросы: GET, POST, PATCH, DELETE, GET 1 элемента.
+    Эндпоинты: /titles/, /titles/{titles_id}/
+    """
     queryset = Title.objects.all()
-    serializer_class = TitlesSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilterBackend
+    pagination_class = PageNumberPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH'):
+            return TitleWriteSerializer
+        return TitleReadSerializer
