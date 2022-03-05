@@ -2,8 +2,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from reviews.models import (
-    Category, CustomUser, Genre, Title,
-    Review
+    Category, CustomUser, Genre, Review,
+    Title,
 )
 
 
@@ -61,20 +61,50 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
-class TitleSerializer(serializers.ModelSerializer):
+class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Произведения."""
-    rating = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField(read_only=True)
     genre = GenreSerializer(many=True)
+    category = CategorySerializer(many=False)
 
     class Meta:
         model = Title
         fields = (
             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
-        read_only = ('id', 'description')
 
-    def get_ratings(self, obj):
+    def get_rating(self, obj):
         """Метод для вычисления усреднённой оценки произведения."""
-        score = Review.objects.filter(score__reviews=obj.id)
-        rating = sum(score) / len(score)
+        reviews = Review.objects.filter(title=obj.id)
+        total_scores = []
+        for review in reviews:
+            total_scores.append(review.score)
+        rating = round(sum(total_scores) / len(total_scores))
         return rating
+
+
+class TitlesRepresentation(serializers.SlugRelatedField):
+
+    def to_representation(self, value):
+        return {
+            'name': value.name,
+            'slug': value.slug
+        }
+
+
+class TitleWriteSerializer(serializers.ModelSerializer):
+
+    genre = TitlesRepresentation(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True
+    )
+    category = TitlesRepresentation(
+        slug_field='slug',
+        queryset=Category.objects.all(),
+        many=False
+    )
+
+    class Meta:
+        model = Title
+        fields = ('name', 'year', 'description', 'genre', 'category')
