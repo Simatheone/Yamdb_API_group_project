@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import Category, CustomUser, Genre, Title
+from .models import Category, Comment, CustomUser, Genre, Review, Title
 
 
 @admin.register(CustomUser)
@@ -50,3 +50,30 @@ class TitlesAdmin(admin.ModelAdmin):
     list_editable = ("name", "year", "description", "category")
     list_filter = ("name", "year", "category")
     empty_value_display = settings.EMPTY_VALUE_ADMIN_PANEL
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        'author',
+        'title',
+        'text',
+        'score',
+        'pub_date'
+    )
+    search_fields = ('title',)
+    list_filter = ('author', 'title')
+    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANE
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        'author',
+        'review',
+        'text',
+        'pub_date'
+    )
+    search_fields = ('review',)
+    list_filter = ('author', 'review')
+    empty_value_display = settings.EMPTY_VALUE_ADMIN_PANE
