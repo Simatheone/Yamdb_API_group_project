@@ -126,4 +126,4 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_USE_TLS = True
 
-EMAIL_ADMIN = 'admin@admin.com'
+EMAIL_HOST_USER = 'host@admin.com'

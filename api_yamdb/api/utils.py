@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from reviews.models import Title, CustomUser
 
-from api_yamdb.settings import EMAIL_ADMIN
+from api_yamdb.settings import EMAIL_HOST_USER
 
 
 class CurrentTitleDefault:
@@ -16,7 +16,7 @@ class CurrentTitleDefault:
         return title
 
     def __repr__(self):
-        return '%s()' % self.__class__.__name__
+        return f'{self.__class__.__name__}'
 
 
 def generate_and_send_confirmation_code_to_email(username):
@@ -26,7 +26,7 @@ def generate_and_send_confirmation_code_to_email(username):
     send_mail(
         'Код подтвержения для завершения регистрации',
         f'Ваш код для получения JWT токена {user.confirmation_code}',
-        EMAIL_ADMIN,
+        EMAIL_HOST_USER,
         [user.email],
         fail_silently=False,
     )
