@@ -78,6 +78,8 @@ class TitleReadSerializer(serializers.ModelSerializer):
         total_scores = []
         for review in reviews:
             total_scores.append(review.score)
+        if not total_scores:
+            return None
         rating = round(sum(total_scores) / len(total_scores))
         return rating
 
@@ -106,7 +108,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
 
 
 class ReviewSerializer(serializers.ModelSerializer):

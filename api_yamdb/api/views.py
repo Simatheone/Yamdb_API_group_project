@@ -35,7 +35,7 @@ class TitleFilterBackend(django_filters.FilterSet):
     )
     category = django_filters.CharFilter(
         field_name='category__slug',
-        lookup_expr='icointains'
+        lookup_expr='icontains'
     )
 
     class Meta:
@@ -142,6 +142,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     pagination_class = CategoryPagination
     http_method_names = ('get', 'post', 'delete')
 
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -160,6 +163,9 @@ class GenreViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
     http_method_names = ('get', 'post', 'delete')
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
