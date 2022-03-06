@@ -54,26 +54,15 @@ class TitlesAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = (
-        'author',
-        'title',
-        'text',
-        'score',
-        'pub_date'
-    )
-    search_fields = ('title',)
-    list_filter = ('author', 'title')
+    list_display = ("author", "title", "text", "score", "pub_date")
+    search_fields = ("title",)
+    list_filter = ("author", "title")
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = (
-        'author',
-        'review',
-        'text',
-        'pub_date'
-    )
-    search_fields = ('review',)
-    list_filter = ('author', 'review')
+    list_display = ("author", "review", "text", "pub_date")
+    search_fields = ("review",)
+    list_filter = ("author", "review")
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL

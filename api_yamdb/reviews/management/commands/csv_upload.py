@@ -3,8 +3,15 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from reviews.models import (Category, Comment, CustomUser, Genre, GenreTitle,
-                            Review, Title)
+from reviews.models import (
+    Category,
+    Comment,
+    CustomUser,
+    Genre,
+    GenreTitle,
+    Review,
+    Title,
+)
 
 
 def category_create(row):
@@ -85,11 +92,10 @@ action = {
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         path = os.path.join(settings.BASE_DIR, "static/data/")
         for key in action.keys():
-            with open(path + key, 'r', encoding='utf-8') as f:
+            with open(path + key, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 next(reader)
                 for row in reader:
