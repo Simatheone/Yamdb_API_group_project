@@ -31,7 +31,7 @@ def validate_username(username):
 
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["username", "email"]
+        fields = ("username", "email")
         model = CustomUser
         extra_kwargs = {
             "email": {"required": True},
@@ -140,9 +140,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
+        default=serializers.CurrentUserDefault(),
         slug_field='username'
     )
 
     class Meta:
-        fields = ('id', 'text', 'author', 'pub_date',)
+        fields = ('id', 'text', 'author', 'review', 'pub_date',)
+        read_only_fields = ('id', 'pub_date', 'review')
         model = Comment
