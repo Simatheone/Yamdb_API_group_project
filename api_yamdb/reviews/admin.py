@@ -7,6 +7,7 @@ from .models import Category, Comment, CustomUser, Genre, Review, Title
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
+    """Админ панель для модели Кастомного Юзера."""
     list_display = (
         'username',
         'email',
@@ -55,6 +56,7 @@ class TitlesAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
+    """Админ панель для модели Ревью."""
     list_display = ('author', 'title', 'text', 'score', 'pub_date')
     search_fields = ('title',)
     list_filter = ('author', 'title')
@@ -63,6 +65,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+    """Админ панель для модели Комменты."""
     list_display = ('author', 'review', 'text', 'pub_date')
     search_fields = ('review',)
     list_filter = ('author', 'review')
