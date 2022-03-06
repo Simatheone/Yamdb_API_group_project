@@ -16,8 +16,8 @@ from .permissions import (
     IsAdmin, IsAdminOrReadOnly, IsOwnerAdminModeratorOrReadOnly
 )
 from .serializers import (
-    CategorySerializer, ConfirmationCodeSerializer,
-    EmailSerializer, GenreSerializer, TitleReadSerializer,
+    CategorySerializer, CommentSerializer, ConfirmationCodeSerializer,
+    EmailSerializer, GenreSerializer, ReviewSerializer, TitleReadSerializer,
     TitleWriteSerializer, UserSerializer
 )
 from reviews.models import Category, CustomUser, Genre, Title
@@ -194,6 +194,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/,
     /titles/{title_id}/reviews/{review_id}
     """
+    serializer_class = ReviewSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (SearchFilter,)
@@ -202,7 +203,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        return title.reviews
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -217,6 +218,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/{review_id}/comments,
     /titles/{title_id}/reviews/{review_id}
     """
+    serializer_class = CommentSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete')
 
@@ -225,7 +227,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Title, pk=title_id)
         review_id = self.kwargs.get('review_id')
         review = title.reviews.get(pk=review_id)
-        return review.comments
+        return review.comments.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
