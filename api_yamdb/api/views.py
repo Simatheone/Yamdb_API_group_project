@@ -1,4 +1,3 @@
-import django_filters
 from rest_framework.decorators import action
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
@@ -20,27 +19,9 @@ from .serializers import (
     EmailSerializer, GenreSerializer, ReviewSerializer, TitleReadSerializer,
     TitleWriteSerializer, UserSerializer
 )
+from .filters import TitleFilterBackend
 from reviews.models import Category, CustomUser, Genre, Title
 from api_yamdb.settings import EMAIL_HOST_USER
-
-
-class TitleFilterBackend(django_filters.FilterSet):
-    """
-    Кастомный фильтр для Title.
-    Добавляет возможность поиска по полю slug жанра и категории.
-    """
-    genre = django_filters.CharFilter(
-        field_name='genre__slug',
-        lookup_expr='icontains'
-    )
-    category = django_filters.CharFilter(
-        field_name='category__slug',
-        lookup_expr='icontains'
-    )
-
-    class Meta:
-        model = Title
-        fields = ('genre', 'category', 'name', 'year')
 
 
 class UserViewSet(viewsets.ModelViewSet):
