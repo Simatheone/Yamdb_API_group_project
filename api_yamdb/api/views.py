@@ -132,9 +132,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
-    search_fields = ('=slug',)
+    search_fields = ('=name',)
     pagination_class = CategoryPagination
-    lookup_field = 'slug'
+    lookup_field = 'name'
     http_method_names = ['get', 'post', 'delete']
 
     def update(self, request, *args, **kwargs):
