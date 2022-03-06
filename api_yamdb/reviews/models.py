@@ -69,7 +69,7 @@ class CustomUser(AbstractUser):
     )
 
     class Meta:
-        db_table = 'customuser'
+        db_table = 'custom_user'
         ordering = ("username",)
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
@@ -93,7 +93,7 @@ class Category(models.Model):
     slug = models.SlugField('Категория слаг', unique=True, max_length=50)
 
     class Meta:
-        db_table = 'categoris'
+        db_table = 'categories'
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
@@ -182,7 +182,7 @@ class GenreTitle(models.Model):
     )
 
     class Meta:
-        db_table = 'reviews_title_genre'
+        db_table = 'genre_title'
 
 
 class Review(models.Model):

@@ -1,6 +1,5 @@
 import django_filters
 from rest_framework.decorators import action
-from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,13 +12,16 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .pagination import CategoryPagination
-from .permissions import IsAdmin, IsAdminOrReadOnly
+from .permissions import (
+    IsAdmin, IsAdminOrReadOnly, IsOwnerAdminModeratorOrReadOnly
+)
 from .serializers import (
     CategorySerializer, ConfirmationCodeSerializer,
     EmailSerializer, GenreSerializer, TitleReadSerializer,
     TitleWriteSerializer, UserSerializer
 )
 from reviews.models import Category, CustomUser, Genre, Title
+from api_yamdb.settings import EMAIL_HOST_USER
 
 
 class TitleFilterBackend(django_filters.FilterSet):
@@ -51,7 +53,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=["get", "patch"],
+        methods=("get", "patch"),
         permission_classes=(IsAuthenticated,)
     )
     def me(self, request):
@@ -68,16 +70,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class EmailRegistrationView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def mail_send(email, user):
         send_mail(
             subject="YaMDB Confirmation Code",
-            message=f"Hello! \n\nYour confirmation: "
-            f"{user.confirmation_code}",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email],
+            message=(f"""
+                Hello!
+
+                Your confirmation: {user.confirmation_code}
+            """),
+            from_email=EMAIL_HOST_USER,
+            recipient_list=(email,),
             fail_silently=False,
         )
 
@@ -94,7 +99,7 @@ class EmailRegistrationView(views.APIView):
 
 
 class AccessTokenView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         serializer = ConfirmationCodeSerializer(data=request.data)
@@ -135,7 +140,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ('=name',)
     pagination_class = CategoryPagination
     lookup_field = 'name'
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ('get', 'post', 'delete')
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -152,7 +157,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = PageNumberPagination
     lookup_field = 'slug'
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ('get', 'post', 'delete')
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -166,9 +171,57 @@ class TitleViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilterBackend
     pagination_class = PageNumberPagination
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'patch', 'delete')
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
             return TitleWriteSerializer
         return TitleReadSerializer
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """
+    Вьюсет для модели Review.
+    Обрабатывает запросы: GET, POST, PATCH, DELETE, GET 1 элемента.
+    Эндпоинты: /titles/{title_id}/reviews/,
+    /titles/{title_id}/reviews/{review_id}
+    """
+    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
+    http_method_names = ('get', 'post', 'patch', 'delete')
+    filter_backends = (SearchFilter,)
+    search_fields = ('=author__username',)
+
+    def get_queryset(self):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        return title.reviews
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        serializer.save(author=self.request.user, title=title)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    """
+    Вьюсет для модели Comment.
+    Обрабатывает запросы: GET, POST, PATCH, DELETE, GET 1 элемента.
+    Эндпоинты: /titles/{title_id}/reviews/{review_id}/comments,
+    /titles/{title_id}/reviews/{review_id}
+    """
+    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
+    http_method_names = ('get', 'post', 'patch', 'delete')
+
+    def get_queryset(self):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        review_id = self.kwargs.get('review_id')
+        review = title.reviews.get(pk=review_id)
+        return review.comments
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        review_id = self.kwargs.get('review_id')
+        review = title.reviews.get(pk=review_id)
+        serializer.save(author=self.request.user, review=review)
