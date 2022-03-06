@@ -23,12 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 
-def validate_username(username):
-    if username == "me":
-        raise ValidationError(f"Имя пользователя: {username} недоступно")
-    return username
-
-
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ("username", "email")
@@ -37,6 +31,11 @@ class EmailSerializer(serializers.ModelSerializer):
             "email": {"required": True},
             "username": {"required": True},
         }
+
+    def validate_username(self, value):
+        if value == "me":
+            raise ValidationError(f"Имя пользователя: {value} недоступно")
+        return value
 
 
 class ConfirmationCodeSerializer(serializers.Serializer):
@@ -137,6 +136,17 @@ class ReviewSerializer(serializers.ModelSerializer):
                 'Оценка может быть от 1 до 10!'
             )
         return data
+
+    def validate_title(self, value):
+        username = self.context.get('request').user
+        reviews = Review.objects.filter(
+            author=username, title=value
+        ).exists()
+        if reviews:
+            raise serializers.ValidationError(
+                'Нельзя добавить второй отзыв на то же самое произведение!'
+            )
+        return value
 
 
 class CommentSerializer(serializers.ModelSerializer):
