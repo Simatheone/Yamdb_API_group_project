@@ -81,21 +81,21 @@ def comment_create(row):
 
 
 action = {
-    "category.csv": category_create,
-    "genre.csv": genre_create,
-    "titles.csv": titles_create,
-    "genre_title.csv": genre_title_create,
-    "users.csv": users_create,
-    "review.csv": review_create,
-    "comments.csv": comment_create,
+    'category.csv': category_create,
+    'genre.csv': genre_create,
+    'titles.csv': titles_create,
+    'genre_title.csv': genre_title_create,
+    'users.csv': users_create,
+    'review.csv': review_create,
+    'comments.csv': comment_create,
 }
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        path = os.path.join(settings.BASE_DIR, "static/data/")
+        path = os.path.join(settings.BASE_DIR, 'static/data/')
         for key in action.keys():
-            with open(path + key, "r", encoding="utf-8") as f:
+            with open(path + key, 'r', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 next(reader)
                 for row in reader:

@@ -7,16 +7,16 @@ from .models import Category, Comment, CustomUser, Genre, Review, Title
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        "username",
-        "email",
-        "first_name",
-        "last_name",
-        "bio",
-        "role",
-        "is_staff",
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'bio',
+        'role',
+        'is_staff',
     )
-    search_fields = ("username",)
-    list_filter = ("role",)
+    search_fields = ('username',)
+    list_filter = ('role',)
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
@@ -24,10 +24,10 @@ class UserAdmin(admin.ModelAdmin):
 class CategoriesAdmin(admin.ModelAdmin):
     """Админ панель для модели Категории."""
 
-    list_display = ("pk", "name", "slug")
-    list_editable = ("name",)
-    list_filter = ("name", "slug")
-    prepopulated_fields = {"slug": ("name",)}
+    list_display = ('pk', 'name', 'slug')
+    list_editable = ('name',)
+    list_filter = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
@@ -35,10 +35,10 @@ class CategoriesAdmin(admin.ModelAdmin):
 class GenresAdmin(admin.ModelAdmin):
     """Админ панель для модели Жанры."""
 
-    list_display = ("pk", "name", "slug")
-    list_editable = ("name",)
-    list_filter = ("name", "slug")
-    prepopulated_fields = {"slug": ("name",)}
+    list_display = ('pk', 'name', 'slug')
+    list_editable = ('name',)
+    list_filter = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
@@ -46,23 +46,23 @@ class GenresAdmin(admin.ModelAdmin):
 class TitlesAdmin(admin.ModelAdmin):
     """Админ панель для модели Произведения."""
 
-    list_display = ("pk", "name", "year", "description", "category")
-    list_editable = ("name", "year", "description", "category")
-    list_filter = ("name", "year", "category")
+    list_display = ('pk', 'name', 'year', 'description', 'category')
+    list_editable = ('name', 'year', 'description', 'category')
+    list_filter = ('name', 'year', 'category')
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("author", "title", "text", "score", "pub_date")
-    search_fields = ("title",)
-    list_filter = ("author", "title")
+    list_display = ('author', 'title', 'text', 'score', 'pub_date')
+    search_fields = ('title',)
+    list_filter = ('author', 'title')
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("author", "review", "text", "pub_date")
-    search_fields = ("review",)
-    list_filter = ("author", "review")
+    list_display = ('author', 'review', 'text', 'pub_date')
+    search_fields = ('review',)
+    list_filter = ('author', 'review')
     empty_value_display = EMPTY_VALUE_ADMIN_PANEL

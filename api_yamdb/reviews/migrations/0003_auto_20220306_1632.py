@@ -6,32 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("reviews", "0002_auto_20220306_1620"),
+        ('reviews', '0002_auto_20220306_1620'),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name="category",
+            name='category',
             options={
-                "ordering": ("name",),
-                "verbose_name": "Категория",
-                "verbose_name_plural": "Категории",
+                'ordering': ('name',),
+                'verbose_name': 'Категория',
+                'verbose_name_plural': 'Категории',
             },
         ),
         migrations.AlterModelOptions(
-            name="genre",
+            name='genre',
             options={
-                "ordering": ("name",),
-                "verbose_name": "Жанр",
-                "verbose_name_plural": "Жанры",
+                'ordering': ('name',),
+                'verbose_name': 'Жанр',
+                'verbose_name_plural': 'Жанры',
             },
         ),
         migrations.AlterModelOptions(
-            name="title",
+            name='title',
             options={
-                "ordering": ("name", "year"),
-                "verbose_name": "Произведение",
-                "verbose_name_plural": "Произведения",
+                'ordering': ('name', 'year'),
+                'verbose_name': 'Произведение',
+                'verbose_name_plural': 'Произведения',
             },
         ),
     ]
