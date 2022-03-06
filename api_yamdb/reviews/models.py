@@ -194,7 +194,7 @@ class GenreTitle(models.Model):
         db_table = 'genre_title'
 
     def __str__(self):
-        return f'{self.genre.name} {self.title.name}' 
+        return f'{self.genre.name} {self.title.name}'
 
 
 class Review(models.Model):
