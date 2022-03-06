@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 def validate_username(username):
     if username == "me":
-        raise ValidationError(f"Имя пользователя: {username} недоступено")
+        raise ValidationError(f"Имя пользователя: {username} недоступно")
     return username
 
 

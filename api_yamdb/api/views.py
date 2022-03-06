@@ -91,10 +91,10 @@ class EmailRegistrationView(views.APIView):
         if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data["email"]
             username = serializer.validated_data["username"]
-            serializer.save(username=username)
+            serializer.save()
             user = get_object_or_404(CustomUser, username=username)
             self.mail_send(email, user)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -138,8 +138,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
     search_fields = ('=name',)
+    lookup_field = 'slug'
     pagination_class = CategoryPagination
-    lookup_field = 'name'
     http_method_names = ('get', 'post', 'delete')
 
     def update(self, request, *args, **kwargs):
@@ -155,8 +155,10 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = PageNumberPagination
+    filter_backends = (SearchFilter,)
+    search_fields = ('=name',)
     lookup_field = 'slug'
+    pagination_class = PageNumberPagination
     http_method_names = ('get', 'post', 'delete')
 
 
