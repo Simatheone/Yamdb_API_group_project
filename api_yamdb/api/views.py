@@ -1,35 +1,26 @@
-from rest_framework.decorators import action
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, views, viewsets
-from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .pagination import CategoryPagination
-from .permissions import (
-    IsAdmin,
-    IsAdminOrReadOnly,
-    IsOwnerAdminModeratorOrReadOnly
-)
-from .serializers import (
-    CategorySerializer,
-    CommentSerializer,
-    ConfirmationCodeSerializer,
-    EmailSerializer,
-    GenreSerializer,
-    ReviewSerializer,
-    TitleReadSerializer,
-    TitleWriteSerializer,
-    UserSerializer,
-)
-from .filters import TitleFilterBackend
-from reviews.models import Category, CustomUser, Genre, Title
 from api_yamdb.settings import EMAIL_HOST_USER
+from reviews.models import Category, CustomUser, Genre, Title
+
+from .filters import TitleFilterBackend
+from .pagination import CategoryPagination
+from .permissions import (IsAdmin, IsAdminOrReadOnly,
+                          IsOwnerAdminModeratorOrReadOnly)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          ConfirmationCodeSerializer, EmailSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          UserSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):

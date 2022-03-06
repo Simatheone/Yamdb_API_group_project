@@ -1,5 +1,6 @@
 from rest_framework import permissions
-from reviews.models import USER_ROLE_MODERATOR, USER_ROLE_ADMIN
+
+from reviews.models import USER_ROLE_ADMIN, USER_ROLE_MODERATOR
 
 
 class IsAdmin(permissions.BasePermission):
