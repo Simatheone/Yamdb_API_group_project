@@ -8,7 +8,9 @@ from reviews.models import (
 class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
-            request.user.role == USER_ROLE_ADMIN or request.user.is_superuser
+            request.user.is_authenticated
+            and (request.user.role == USER_ROLE_ADMIN
+                 or request.user.is_superuser)
         )
 
 
@@ -32,6 +34,8 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user.is_superuser
-            or request.user.role == USER_ROLE_ADMIN
+            or (request.user.is_authenticated
+                and (request.user.is_superuser
+                     or request.user.role == USER_ROLE_ADMIN)
+                )
         )
