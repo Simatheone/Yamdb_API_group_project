@@ -31,6 +31,8 @@ def validate_year(value):
 
 
 class CustomUser(AbstractUser):
+    """Модель Кастомного Юзера."""
+
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         verbose_name='Пользователь',
@@ -78,9 +80,6 @@ class CustomUser(AbstractUser):
                 fields=['username', 'email'], name='unique_username_email'
             )
         ]
-
-    def is_admin(self):
-        return self.is_staff or self.role == USER_ROLE_ADMIN
 
 
 class Category(models.Model):
@@ -191,6 +190,8 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
+    """Модель Ревью."""
+
     author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
@@ -238,6 +239,8 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
+    """Модель Комментарии."""
+
     author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
