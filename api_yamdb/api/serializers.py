@@ -8,6 +8,8 @@ from .utils import CurrentTitleDefault
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Кастом Юзер."""
+
     class Meta:
         fields = [
             'email',
@@ -25,6 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class EmailSerializer(serializers.ModelSerializer):
+    """Сериализатор для отправки кода подтверждения на email."""
+
     class Meta:
         fields = ('username', 'email')
         model = CustomUser
@@ -40,6 +44,8 @@ class EmailSerializer(serializers.ModelSerializer):
 
 
 class ConfirmationCodeSerializer(serializers.Serializer):
+    """Сериализатор для кода подтверждения."""
+
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
 
@@ -61,7 +67,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Произведения."""
+    """Сериализатор для чтения Произведения."""
 
     rating = serializers.SerializerMethodField(read_only=True)
     genre = GenreSerializer(many=True)
@@ -85,11 +91,13 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitlesRepresentation(serializers.SlugRelatedField):
+    """Метод отображения Произведения."""
     def to_representation(self, value):
         return {'name': value.name, 'slug': value.slug}
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
+    """Сериализатор для записи Произведений."""
 
     genre = TitlesRepresentation(
         slug_field='slug', queryset=Genre.objects.all(), many=True
@@ -104,6 +112,8 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Ревью."""
+
     author = serializers.SlugRelatedField(
         default=serializers.CurrentUserDefault(),
         read_only=True,
@@ -121,11 +131,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
+        """
+        Валидатор для проверки поля score.
+        Проверяет, что введеное число находится в интвервале
+        от 1 до 10.
+        """
         if not 1 <= data['score'] <= 10:
             raise serializers.ValidationError('Оценка может быть от 1 до 10!')
         return data
 
     def validate_title(self, value):
+        """
+        Валидатор для проверки оставленного отзыва.
+        Проверят, оставлял ли юзер отзыв о данном произведении.
+        В случае повторного отзыва вызывает ошибка.
+        """
         username = self.context.get('request').user
         reviews = Review.objects.filter(author=username, title=value).exists()
         if reviews:
@@ -136,6 +156,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Комментарий."""
+
     author = serializers.SlugRelatedField(
         read_only=True,
         default=serializers.CurrentUserDefault(),
