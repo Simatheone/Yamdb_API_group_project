@@ -20,7 +20,7 @@ from .serializers import (
     EmailSerializer, GenreSerializer, TitleReadSerializer,
     TitleWriteSerializer, UserSerializer
 )
-from reviews.models import Category, CustomUser, Genre, Title, Review, Comment
+from reviews.models import Category, CustomUser, Genre, Title
 from api_yamdb.settings import EMAIL_HOST_USER
 
 
@@ -186,7 +186,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/,
     /titles/{title_id}/reviews/{review_id}
     """
-    queryset = Review.objects.all()
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (SearchFilter,)
@@ -210,7 +209,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/{review_id}/comments,
     /titles/{title_id}/reviews/{review_id}
     """
-    queryset = Comment.objects.all()
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete')
 
