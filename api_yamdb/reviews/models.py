@@ -5,6 +5,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from api_yamdb.settings import MIN_STR
+
 USER_ROLE_USER = 'user'
 USER_ROLE_MODERATOR = 'moderator'
 USER_ROLE_ADMIN = 'admin'
@@ -81,6 +83,9 @@ class CustomUser(AbstractUser):
             )
         ]
 
+    def __str__(self):
+        return self.username
+
 
 class Category(models.Model):
     """Модель Категории."""
@@ -97,7 +102,7 @@ class Category(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MIN_STR]
 
 
 class Genre(models.Model):
@@ -117,7 +122,7 @@ class Genre(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MIN_STR]
 
 
 class Title(models.Model):
@@ -161,7 +166,7 @@ class Title(models.Model):
         ordering = ('name', 'year')
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MIN_STR]
 
 
 class GenreTitle(models.Model):
@@ -187,6 +192,9 @@ class GenreTitle(models.Model):
 
     class Meta:
         db_table = 'genre_title'
+
+    def __str__(self):
+        return f'{self.genre.name} {self.title.name}' 
 
 
 class Review(models.Model):
@@ -235,7 +243,7 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return self.text[:30]
+        return self.text[:MIN_STR]
 
 
 class Comment(models.Model):
@@ -275,4 +283,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text[:30]
+        return self.text[:MIN_STR]
