@@ -138,3 +138,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'host@admin.com'
 
 MIN_STR = 30
+
+# Стартовая точка для проверки года произведения
+# 1895 - дата создания кинематографа
+CINEMATOGRAPHY_CREATION_YEAR = 1895

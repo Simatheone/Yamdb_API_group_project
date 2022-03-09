@@ -5,7 +5,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from api_yamdb.settings import MIN_STR
+from api_yamdb.settings import CINEMATOGRAPHY_CREATION_YEAR, MIN_STR
 
 USER_ROLE_USER = 'user'
 USER_ROLE_MODERATOR = 'moderator'
@@ -23,12 +23,14 @@ def validate_year(value):
     Валидатор для проверки введенного года выпуска произведения.
     """
     year_now = datetime.now().year
-    if year_now > value:
+    if year_now >= value >= CINEMATOGRAPHY_CREATION_YEAR:
         return value
     else:
         raise ValidationError(
             f'Год выпуска произведения {value} не может быть больше '
-            f'настоящего года {year_now}.'
+            f'настоящего года {year_now}, либо меньше даты '
+            f'создания кинематографа "{CINEMATOGRAPHY_CREATION_YEAR}"г.'
+            'Проверьте введеные данные.'
         )
 
 
@@ -41,7 +43,7 @@ class CustomUser(AbstractUser):
         max_length=257,
         unique=True,
         help_text='Введите username',
-        validators=[username_validator],
+        validators=(username_validator,),
         error_messages={
             'unique': 'Пользователь с таким именем уже зарегистрирован',
         },
@@ -79,7 +81,7 @@ class CustomUser(AbstractUser):
         verbose_name_plural = 'Пользователи'
         constraints = [
             models.UniqueConstraint(
-                fields=['username', 'email'], name='unique_username_email'
+                fields=('username', 'email'), name='unique_username_email'
             )
         ]
 
@@ -135,13 +137,12 @@ class Title(models.Model):
     )
     year = models.IntegerField(
         'Год выпуска',
-        validators=[validate_year],
+        validators=(validate_year,),
         help_text='Введите год выпуска произведения',
     )
     description = models.TextField(
         'Описание произведения',
         blank=True,
-        null=True,
         help_text='Введите описание произведения',
     )
     category = models.ForeignKey(
@@ -226,11 +227,11 @@ class Review(models.Model):
         )
         indexes = (
             models.Index(
-                fields=['author'],
+                fields=('author',),
                 name='author_post_idx'
             ),
             models.Index(
-                fields=['text'],
+                fields=('text',),
                 name='search_text_idx'
             ),
         )
@@ -238,7 +239,7 @@ class Review(models.Model):
         verbose_name_plural = 'Обзоры'
         constraints = [
             models.UniqueConstraint(
-                fields=['title', 'author'], name='unique_title'
+                fields=('title', 'author'), name='unique_title'
             )
         ]
 
@@ -275,7 +276,7 @@ class Comment(models.Model):
         )
         indexes = (
             models.Index(
-                fields=['review'],
+                fields=('review',),
                 name='review_comment_idx'
             ),
         )
