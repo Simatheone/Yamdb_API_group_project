@@ -1,24 +1,23 @@
-from dotenv import load_dotenv
+import environ
 
 import datetime
 import os
 
-load_dotenv()
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv(
-    'SECRET_KEY',
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+env = environ.Env(
+    DEBUG=(bool, False),
     default='p&l%385148kslhtyn^##a1)ier@4zqj=rq&agdol^##zgl9(vs'
 )
 
+SECRET_KEY = env('SECRET_KEY')
+
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-]
+ALLOWED_HOSTS = os.environ.get('SERVERNAMES').split(',')
+print(ALLOWED_HOSTS)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
