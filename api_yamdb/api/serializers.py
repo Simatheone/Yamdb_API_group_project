@@ -130,15 +130,15 @@ class ReviewSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, data):
+    def validate_score(self, value):
         """
         Валидатор для проверки поля score.
         Проверяет, что введеное число находится в интвервале
         от 1 до 10.
         """
-        if not 1 <= data['score'] <= 10:
+        if not 1 <= value <= 10:
             raise serializers.ValidationError('Оценка может быть от 1 до 10!')
-        return data
+        return value
 
     def validate_title(self, value):
         """
