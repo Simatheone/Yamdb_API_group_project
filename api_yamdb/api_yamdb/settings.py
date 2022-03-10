@@ -6,15 +6,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ier@4zqj=rq&agdol^##zgl9(vs'
 
+DEBUG = False
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '[::1]'
 ]
-
-DEBUG = False
-
-ALLOWED_HOSTS = os.environ.get('SERVERNAMES').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
