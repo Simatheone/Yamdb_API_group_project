@@ -34,6 +34,7 @@ class ListCreateDestroyViewSet(
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """Вьюсет для кастомного юзера."""
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdmin,)
@@ -59,6 +60,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class EmailRegistrationView(views.APIView):
+    """Вьюсет отправки e-mail сообщения при регестрации юзера."""
     permission_classes = (AllowAny,)
 
     @staticmethod
@@ -90,6 +92,7 @@ class EmailRegistrationView(views.APIView):
 
 
 class AccessTokenView(views.APIView):
+    """Вьюсет для получения/обновления токена."""
     permission_classes = (AllowAny,)
 
     def post(self, request):
