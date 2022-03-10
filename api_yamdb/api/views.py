@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, views, viewsets
+from rest_framework import mixins, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
@@ -23,11 +23,20 @@ from .serializers import (CategorySerializer, CommentSerializer,
                           UserSerializer)
 
 
+class ListCreateDestroyViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    """Кастомный вьюсет через миксины."""
+    pass
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdmin,)
-    http_method_names = ('get', 'post', 'patch', 'delete')
     search_fields = ('username',)
     lookup_field = 'username'
 
@@ -111,7 +120,7 @@ class AccessTokenView(views.APIView):
         return {'token': str(AccessToken.for_user(user))}
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ListCreateDestroyViewSet):
     """
     Вьюсет для модели Category.
     Обрабатывает запросы: GET, POST, DELETE
@@ -125,16 +134,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ('=name',)
     lookup_field = 'slug'
     pagination_class = CategoryPagination
-    http_method_names = ('get', 'post', 'delete')
-
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ListCreateDestroyViewSet):
     """
     Вьюсет для модели Genre.
     Обрабатывает запросы: GET, POST, DELETE
@@ -148,7 +150,6 @@ class GenreViewSet(viewsets.ModelViewSet):
     search_fields = ('=name',)
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
-    http_method_names = ('get', 'post', 'delete')
 
     def retrieve(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -166,7 +167,6 @@ class TitleViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilterBackend
     pagination_class = PageNumberPagination
-    http_method_names = ('get', 'post', 'patch', 'delete')
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
@@ -184,7 +184,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     serializer_class = ReviewSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
-    http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (SearchFilter,)
     search_fields = ('=author__username',)
 
@@ -209,7 +208,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     serializer_class = CommentSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
-    http_method_names = ('get', 'post', 'patch', 'delete')
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
