@@ -29,12 +29,19 @@ class ListCreateDestroyViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    """Кастомный вьюсет через миксины."""
+    """
+    Кастомный вьюсет для наследования.
+    Вьюсеты использующие наслодование: GenreViewSet, CategoryViewSet
+    """
     pass
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """Вьюсет для кастомного юзера."""
+    """
+    Вьюсет для кастомного юзера.
+    Обрабатываемые запросы: GET, POST, PATCH, DELETE.
+    Эндпоинты: /users/me/
+    """
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdmin,)
@@ -60,7 +67,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class EmailRegistrationView(views.APIView):
-    """Вьюсет отправки e-mail сообщения при регестрации юзера."""
+    """
+    Вьюсет отправки регестрации юзера.
+    Обрабатываемые запросы: POST.
+    Эндпоинты: /auth/signup/
+    """
     permission_classes = (AllowAny,)
 
     @staticmethod
@@ -92,7 +103,11 @@ class EmailRegistrationView(views.APIView):
 
 
 class AccessTokenView(views.APIView):
-    """Вьюсет для получения/обновления токена."""
+    """
+    Вьюсет для получения/обновления токена.
+    Обрабатываемые запросы: POST.
+    Эндпоинты: /auth/token/
+    """
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -129,7 +144,6 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     Обрабатывает запросы: GET, POST, DELETE
     Эндпоинты: /categories/, /categories/{slug}/
     """
-
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -145,7 +159,6 @@ class GenreViewSet(ListCreateDestroyViewSet):
     Обрабатывает запросы: GET, POST, DELETE
     Эндпоинты: /genres/, /genres/{slug}/
     """
-
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -164,7 +177,6 @@ class TitleViewSet(viewsets.ModelViewSet):
     Обрабатывает запросы: GET, POST, PATCH, DELETE, GET 1 элемента.
     Эндпоинты: /titles/, /titles/{titles_id}/
     """
-
     queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
@@ -184,7 +196,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/,
     /titles/{title_id}/reviews/{review_id}
     """
-
     serializer_class = ReviewSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
     filter_backends = (SearchFilter,)
@@ -208,7 +219,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     Эндпоинты: /titles/{title_id}/reviews/{review_id}/comments,
     /titles/{title_id}/reviews/{review_id}
     """
-
     serializer_class = CommentSerializer
     permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
 
