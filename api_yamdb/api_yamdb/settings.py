@@ -17,7 +17,6 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = os.environ.get('SERVERNAMES').split(',')
-print(ALLOWED_HOSTS)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
