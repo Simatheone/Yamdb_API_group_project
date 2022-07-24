@@ -13,7 +13,7 @@
 
 ### Используемые технологии
 
-:snake: Python 3.8, :desktop_computer: Django 2.2.19, :card_file_box: SQlite3, :key: Djoser
+:snake: Python 3.8, :desktop_computer: Django 2.2.19, :arrows_clockwise: Django Rest Framework 3.12.4, :card_file_box: SQlite3, :key: Simple JWT, :soap: Django Filters 
 
 ---
 
