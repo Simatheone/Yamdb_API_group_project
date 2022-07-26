@@ -19,7 +19,7 @@
 
 ## Структура проекта
 ```
-bs4_parser_pep
+yamdb_api
  ├── api_yamdb/
      ├── api/
      ├── api_yamdb/
