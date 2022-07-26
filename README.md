@@ -100,7 +100,7 @@ YaMDB отправляет письмо с кодом подтверждения
 
 1. Клонировать репозиторий:
 ```bash
-git clone https://github.com/simatheone/Yamdb_API_group_project.git
+git clone https://github.com/simatheone/yamdb-api.git
 ```
 2. Создать виртуальное окружение:
 ```bash
